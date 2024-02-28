@@ -3,6 +3,7 @@ using Contracts;
 using Entities.Exceptions;
 using Shared.DataTransferObjects;
 using Service.Contracts;
+using Entities.Models;
 
 namespace Service;
 
@@ -30,4 +31,12 @@ public sealed class CompanyService(IRepositoryManager repository, ILoggerManager
         return companyDto;
     }
 
+    public CompanyDto CreateCompany(CompanyForCreationDto company)
+    {
+        var companyEntity = _mapper.Map<Company>(company);
+        _repository.Company.CreateCompany(companyEntity);
+        _repository.Save();
+        var companyToReturn = _mapper.Map<CompanyDto>(companyEntity);
+        return companyToReturn;
+    }
 }
