@@ -20,7 +20,10 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddControllers() // dictates the app to find controllers inside of the 'CompanyEmployees.Presentation' project
+builder.Services.AddControllers(config => config.RespectBrowserAcceptHeader = true)
+    // enable xml formatters
+    .AddXmlDataContractSerializerFormatters()
+    // dictates the app to find controllers inside of the 'CompanyEmployees.Presentation' project
     .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
 
 var app = builder.Build();
