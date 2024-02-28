@@ -7,20 +7,12 @@ namespace CompanyEmployees.Presentation.Controllers;
 [ApiController]
 public class CompaniesController(IServiceManager service) : ControllerBase
 {
-    private readonly IServiceManager _service = service;
+	private readonly IServiceManager _service = service;
 
-    [HttpGet]
+	[HttpGet]
 	public IActionResult GetCompanies()
-	{
-		try
-		{
-			var companies = _service.CompanyService.GetAllCompanies(trackChanges: false);
-
-			return Ok(companies);
-		}
-		catch
-		{
-			return StatusCode(500, "Internal server error");
-		}
+    {
+		var companies = _service.CompanyService.GetAllCompanies(trackChanges: false);
+		return Ok(companies);
 	}
 }

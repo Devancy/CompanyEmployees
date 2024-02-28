@@ -1,4 +1,6 @@
+using CompanyEmployees;
 using CompanyEmployees.Extensions;
+using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
 
@@ -16,6 +18,7 @@ builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddControllers() // dictates the app to find controllers inside of the 'CompanyEmployees.Presentation' project
     .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
@@ -23,11 +26,8 @@ builder.Services.AddControllers() // dictates the app to find controllers inside
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-}
-else
+app.UseExceptionHandler(opt => { });
+if(app.Environment.IsProduction())
 {
     // The HTTP Strict-Transport-Security response header informs browsers that the site should only be accessed using HTTPS,
     // and that any future attempts to access it using HTTP should automatically be converted to HTTPS.
