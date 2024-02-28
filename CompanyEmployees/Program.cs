@@ -20,7 +20,11 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
-builder.Services.AddControllers(config => config.RespectBrowserAcceptHeader = true)
+builder.Services.AddControllers(config =>
+    {
+        config.RespectBrowserAcceptHeader = true;
+        config.ReturnHttpNotAcceptable = true; // returns the 406 `Not Acceptable` status code for un-supported media type.
+    })
     // enable xml formatters
     .AddXmlDataContractSerializerFormatters()
     // dictates the app to find controllers inside of the 'CompanyEmployees.Presentation' project
