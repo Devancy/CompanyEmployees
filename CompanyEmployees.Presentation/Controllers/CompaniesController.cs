@@ -7,49 +7,63 @@ namespace CompanyEmployees.Presentation.Controllers;
 
 [Route("api/companies")]
 [ApiController]
-public class CompaniesController(IServiceManager service) : ControllerBase
+public class CompaniesController : ControllerBase
 {
-	private readonly IServiceManager _service = service;
+    private readonly IServiceManager _service;
 
-	[HttpGet]
-	public IActionResult GetCompanies()
-	{
-		var companies = _service.CompanyService.GetAllCompanies(trackChanges: false);
-		return Ok(companies);
-	}
+    public CompaniesController(IServiceManager service) => _service = service;
 
-	[HttpGet("{id:guid}", Name = "CompanyById")]
-	public IActionResult GetCompany(Guid id)
-	{
-		var company = _service.CompanyService.GetCompany(id, trackChanges: false);
-		return Ok(company);
-	}
+    [HttpGet]
+    public IActionResult GetCompanies()
+    {
+        var companies = _service.CompanyService.GetAllCompanies(trackChanges: false);
 
-	[HttpPost]
-	public IActionResult CreateCompany([FromBody] CompanyForCreationDto? company)
-	{
-		if (company is null)
-			return BadRequest("CompanyForCreationDto object is null");
-		var createdCompany = _service.CompanyService.CreateCompany(company);
+        return Ok(companies);
+    }
 
-		// returns status code 201 means created.
-		// populates new newly created company to the response body.
-		// adds `Location` attribute within the response header which has value is the address to get the created company.
-		return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
-	}
+    [HttpGet("{id:guid}", Name = "CompanyById")]
+    public IActionResult GetCompany(Guid id)
+    {
+        var company = _service.CompanyService.GetCompany(id, trackChanges: false);
 
-	[HttpGet("collection/({ids})", Name = "CompanyCollection")]
-	public IActionResult GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))]IEnumerable<Guid> ids)
-	{
-		var companies = _service.CompanyService.GetByIds(ids, trackChanges: false);
-		return Ok(companies);
-	}
+        return Ok(company);
+    }
 
-	[HttpPost("collection")]
-	public IActionResult CreateCompanyCollection([FromBody]IEnumerable<CompanyForCreationDto> companyCollection)
-	{
-		var (companies, ids) = _service.CompanyService.CreateCompanyCollection(companyCollection);
-		return CreatedAtRoute("CompanyCollection", new { ids }, companies);
-	}
+    [HttpGet("collection/({ids})", Name = "CompanyCollection")]
+    public IActionResult GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+    {
+        var companies = _service.CompanyService.GetByIds(ids, trackChanges: false);
 
+        return Ok(companies);
+    }
+
+    [HttpPost]
+    public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
+    {
+        if (company is null)
+            return BadRequest("CompanyForCreationDto object is null");
+
+        var createdCompany = _service.CompanyService.CreateCompany(company);
+
+        // returns status code 201 means created.
+        // populates new newly created company to the response body.
+        // adds `Location` attribute within the response header which has value is the address to get the created company.
+        return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
+    }
+
+    [HttpPost("collection")]
+    public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
+    {
+        var (companies, ids) = _service.CompanyService.CreateCompanyCollection(companyCollection);
+
+        return CreatedAtRoute("CompanyCollection", new { ids }, companies);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public IActionResult DeleteCompany(Guid id)
+    {
+        _service.CompanyService.DeleteCompany(id, trackChanges: false);
+
+        return NoContent();
+    }
 }
