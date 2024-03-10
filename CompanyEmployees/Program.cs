@@ -23,7 +23,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.Configure<ApiBehaviorOptions>(opt =>
 {
-    // suppress to enable custom response when model state is invalid
+    // suppress default model state validation to enable custom response when model state is invalid
     opt.SuppressModelStateInvalidFilter = true;
 });
 
