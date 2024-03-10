@@ -68,7 +68,13 @@ public class EmployeesController : ControllerBase
         if (pathDoc is null)
             return BadRequest("pathDoc object sent from client is null.");
         var (employeeToPatch, employeeEntity) = _service.EmployeeService.GetEmployeeForPatch(companyId, id, compTrackChanges: false, empTrackChanges: true);
-        pathDoc.ApplyTo(employeeToPatch);
+        pathDoc.ApplyTo(employeeToPatch, ModelState);
+
+        // Validate the entity
+        TryValidateModel(employeeToPatch);
+
+        if (!ModelState.IsValid) // Validate the pathDoc
+            return UnprocessableEntity(ModelState);
 
         _service.EmployeeService.SaveChangesForPatch(employeeToPatch, employeeEntity);
 
