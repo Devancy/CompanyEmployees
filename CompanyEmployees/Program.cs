@@ -1,5 +1,6 @@
 using CompanyEmployees;
 using CompanyEmployees.Extensions;
+using CompanyEmployees.Presentation.ActionFilters;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -26,7 +27,7 @@ builder.Services.Configure<ApiBehaviorOptions>(opt =>
     // suppress default model state validation to enable custom response when model state is invalid
     opt.SuppressModelStateInvalidFilter = true;
 });
-
+builder.Services.AddScoped<ValidationFilterAttribute>();
 builder.Services.AddControllers(config =>
     {
         config.RespectBrowserAcceptHeader = true;

@@ -1,6 +1,6 @@
-@CompanyEmployees_HostAddress = http://localhost:5293
+@CompanyEmployees_HostAddress = http://localhost:5000
 
-GET {{CompanyEmployees_HostAddress}}/weatherforecast/
+GET {{CompanyEmployees_HostAddress}}/api/companies/
 Accept: application/json
 
 ###
