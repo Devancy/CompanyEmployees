@@ -8,11 +8,16 @@ namespace CompanyEmployees.Presentation.Controllers;
 
 [Route("api/companies")]
 [ApiController]
-public class CompaniesController : ControllerBase
+public class CompaniesController(IServiceManager service) : ControllerBase
 {
-    private readonly IServiceManager _service;
+    private readonly IServiceManager _service = service;
 
-    public CompaniesController(IServiceManager service) => _service = service;
+    [HttpOptions]
+    public IActionResult GetCompaniesOptions()
+    {
+        Response.Headers.Add("Allow", "GET, OPTIONS, POST, PUT, DELETE");
+        return Ok();
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetCompanies()

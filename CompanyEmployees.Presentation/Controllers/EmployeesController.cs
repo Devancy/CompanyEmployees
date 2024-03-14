@@ -11,12 +11,12 @@ namespace CompanyEmployees.Presentation.Controllers;
 
 [Route("api/companies/{companyId}/employees")]
 [ApiController]
-public class EmployeesController : ControllerBase
+public class EmployeesController(IServiceManager service) : ControllerBase
 {
-    private readonly IServiceManager _service;
-    public EmployeesController(IServiceManager service) => _service = service;
+    private readonly IServiceManager _service = service;
 
     [HttpGet]
+    [HttpHead]
     [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParameters)
     {
