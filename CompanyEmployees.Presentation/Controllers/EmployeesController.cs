@@ -1,4 +1,5 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
+using Entities.LinkModels;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -16,15 +17,16 @@ public class EmployeesController : ControllerBase
     public EmployeesController(IServiceManager service) => _service = service;
 
     [HttpGet]
+    [ServiceFilter(typeof(ValidateMediaTypeAttribute))]
     public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParameters)
     {
-        var (employees, metaData) = await _service.EmployeeService.GetEmployeesAsync(companyId, employeeParameters, trackChanges: false);
-
+        var linkParams = new LinkParameters(employeeParameters, HttpContext);
+        var (linkResponse, metaData) = await _service.EmployeeService.GetEmployeesAsync(companyId, linkParams, trackChanges: false);
 #pragma warning disable ASP0019 // Suggest using IHeaderDictionary.Append or the indexer
         Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metaData));
 #pragma warning restore ASP0019 // Suggest using IHeaderDictionary.Append or the indexer
 
-        return Ok(employees);
+        return Ok(linkResponse.HasLinks ? linkResponse.LinkedEntities : linkResponse.ShapedEntities);
     }
 
     [HttpGet("{id:guid}", Name = "GetEmployeeForCompany")]
@@ -62,7 +64,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> PartialUpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<EmployeeForUpdateDto> pathDoc)
+    public async Task<IActionResult> PartiallyUpdateEmployeeForCompany(Guid companyId, Guid id, [FromBody] JsonPatchDocument<EmployeeForUpdateDto> pathDoc)
     {
         if (pathDoc is null)
             return BadRequest("pathDoc object sent from client is null.");
