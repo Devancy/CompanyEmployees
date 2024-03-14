@@ -15,8 +15,8 @@ public class RootController(LinkGenerator linkGenerator) : ControllerBase
     {
         if (mediaType.Contains("application/vnd.identifier.apiroot"))
         {
-            var list = new List<Link>
-                {
+            List<Link> list =
+                [
                     new Link
                     {
                         Href = _linkGenerator.GetUriByName(HttpContext, nameof(GetRoot), new {}),
@@ -35,7 +35,7 @@ public class RootController(LinkGenerator linkGenerator) : ControllerBase
                         Rel = "create_company",
                         Method = "POST"
                     }
-                };
+                ];
 
             return Ok(list);
         }

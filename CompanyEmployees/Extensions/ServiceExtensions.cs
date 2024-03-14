@@ -6,6 +6,8 @@ using Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
+using CompanyEmployees.Presentation.Controllers;
 
 namespace CompanyEmployees.Extensions;
 
@@ -60,6 +62,23 @@ public static class ServiceExtensions
                 xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.identifier.hateoas+xml");
                 xmlOutputFormatter.SupportedMediaTypes.Add("application/vnd.identifier.apiroot+xml");
             }
+        });
+    }
+
+    public static void ConfigureVersioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(opt =>
+        {
+            opt.ReportApiVersions = true;
+            opt.AssumeDefaultVersionWhenUnspecified = true;
+            opt.DefaultApiVersion = new ApiVersion(1, 0);
+            opt.ApiVersionReader = new HeaderApiVersionReader("api-version");
+        }).AddMvc(opt =>
+        {
+            opt.Conventions.Controller<CompaniesController>()
+            .HasApiVersion(new ApiVersion(1, 0));
+            opt.Conventions.Controller<EmployeesController>()
+            .HasApiVersion(new ApiVersion(1, 0));
         });
     }
 }
