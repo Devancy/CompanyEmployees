@@ -36,11 +36,13 @@ builder.Services.AddScoped<ValidateMediaTypeAttribute>();
 builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 builder.Services.AddScoped<IEmployeeLinks, EmployeeLinks>();
 builder.Services.ConfigureVersioning();
+builder.Services.ConfigureResponseCaching();
 builder.Services.AddControllers(config =>
     {
         config.RespectBrowserAcceptHeader = true;
         config.ReturnHttpNotAcceptable = true; // returns the 406 `Not Acceptable` status code for un-supported media type.
         config.InputFormatters.Insert(0, GetJsonPatchInputFormatter()); // Put the 'JsonPatchInputFormatter' at the index 0 in the InputFormatters list
+        config.CacheProfiles.Add("90sDuration", new CacheProfile { Duration = 90 });
     })
     // enable xml formatters
     .AddXmlDataContractSerializerFormatters()
@@ -66,7 +68,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
     ForwardedHeaders = ForwardedHeaders.All
 });
 app.UseCors("CorsPolicy");
-
+app.UseResponseCaching();
 app.UseAuthorization();
 
 app.MapControllers();

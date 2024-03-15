@@ -81,4 +81,6 @@ public static class ServiceExtensions
             .HasApiVersion(new ApiVersion(1, 0));
         });
     }
+    public static void ConfigureResponseCaching(this IServiceCollection services) => services.AddResponseCaching();
+
 }
