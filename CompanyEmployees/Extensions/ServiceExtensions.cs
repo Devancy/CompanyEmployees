@@ -81,6 +81,11 @@ public static class ServiceExtensions
             .HasApiVersion(new ApiVersion(1, 0));
         });
     }
-    public static void ConfigureResponseCaching(this IServiceCollection services) => services.AddResponseCaching();
+    public static void ConfigureOutputCaching(this IServiceCollection services) => services.AddOutputCache(opt =>
+    {
+        // apply this base policy to all endpoints in our controllers
+        opt.AddBasePolicy(bp => bp.Expire(TimeSpan.FromSeconds(10)).Tag("tag=all"));
+        opt.AddPolicy("120SecondsDuration", p => p.Expire(TimeSpan.FromSeconds(120)).Tag("tag-expensive"));
+    });
 
 }
