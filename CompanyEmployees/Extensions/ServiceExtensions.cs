@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using CompanyEmployees.Presentation.Controllers;
+using System.Threading.RateLimiting;
 
 namespace CompanyEmployees.Extensions;
 
@@ -88,4 +89,42 @@ public static class ServiceExtensions
         opt.AddPolicy("120SecondsDuration", p => p.Expire(TimeSpan.FromSeconds(120)).Tag("tag-expensive"));
     });
 
+    public static void ConfigureRateLimitingOptions(this IServiceCollection services)
+    {
+        services.AddRateLimiter(opt =>
+        {
+            opt.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+            RateLimitPartition.GetSlidingWindowLimiter("GlobalLimiter",
+            partition => new SlidingWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 10,
+                Window = TimeSpan.FromSeconds(10),
+                SegmentsPerWindow = 2,
+                QueueLimit = 5,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+            opt.AddPolicy("3Per10sPolicy", context =>
+             RateLimitPartition.GetFixedWindowLimiter("3Per10sLimiter",
+             partition => new FixedWindowRateLimiterOptions
+             {
+                 AutoReplenishment = true,
+                 PermitLimit = 3,
+                 Window = TimeSpan.FromSeconds(10)
+             }));
+
+
+            opt.OnRejected = async (context, token) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                    await context.HttpContext.Response
+                    .WriteAsync($"Too many requests. Please try again after {retryAfter.TotalSeconds} second(s).", token);
+                else
+                    await context.HttpContext.Response
+                    .WriteAsync("Too many requests. Please try again later.", token);
+            };
+        });
+    }
 }

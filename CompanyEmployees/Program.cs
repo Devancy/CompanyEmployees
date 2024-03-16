@@ -37,6 +37,7 @@ builder.Services.AddScoped<IDataShaper<EmployeeDto>, DataShaper<EmployeeDto>>();
 builder.Services.AddScoped<IEmployeeLinks, EmployeeLinks>();
 builder.Services.ConfigureVersioning();
 builder.Services.ConfigureOutputCaching();
+builder.Services.ConfigureRateLimitingOptions();
 builder.Services.AddControllers(config =>
     {
         config.RespectBrowserAcceptHeader = true;
@@ -66,14 +67,12 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.All
 });
+
+app.UseRateLimiter();
 app.UseCors("CorsPolicy");
-
 app.UseOutputCache();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
 
 // A workaround to support JSON Patch with 'NewtonsoftJson' while leaving other formatters unchanged.

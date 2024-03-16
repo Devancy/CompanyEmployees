@@ -2,6 +2,7 @@
 using CompanyEmployees.Presentation.ModelBinders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 using Service.Contracts;
 using Shared.DataTransferObjects;
 
@@ -22,6 +23,7 @@ public class CompaniesController(IServiceManager service) : ControllerBase
     }
 
     [HttpGet(Name = "GetCompanies")]
+    [EnableRateLimiting("3Per10sPolicy")]
     public async Task<IActionResult> GetCompanies()
     {
         var companies = await _service.CompanyService.GetAllCompaniesAsync(trackChanges: false);
