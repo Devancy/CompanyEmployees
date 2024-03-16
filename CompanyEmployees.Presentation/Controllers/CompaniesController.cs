@@ -1,5 +1,6 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
 using CompanyEmployees.Presentation.ModelBinders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -24,6 +25,7 @@ public class CompaniesController(IServiceManager service) : ControllerBase
 
     [HttpGet(Name = "GetCompanies")]
     [EnableRateLimiting("3Per10sPolicy")]
+    [Authorize(Roles = "Manager")]
     public async Task<IActionResult> GetCompanies()
     {
         var companies = await _service.CompanyService.GetAllCompaniesAsync(trackChanges: false);
@@ -32,7 +34,7 @@ public class CompaniesController(IServiceManager service) : ControllerBase
     }
 
     [HttpGet("{id:guid}", Name = "CompanyById")]
-    [OutputCache(NoStore = true)] // excluding this action from caching
+    //[OutputCache(NoStore = true)] // excluding this action from caching
     public async Task<IActionResult> GetCompany(Guid id)
     {
         var company = await _service.CompanyService.GetCompanyAsync(id, trackChanges: false);

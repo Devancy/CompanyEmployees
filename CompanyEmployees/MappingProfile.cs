@@ -17,5 +17,6 @@ public class MappingProfile : Profile
         CreateMap<EmployeeForCreationDto, Employee>();
         CreateMap<EmployeeForUpdateDto, Employee>().ReverseMap(); // two-way mapping
         CreateMap<CompanyForUpdateDto, Company>();
+        CreateMap<UserForRegistrationDto, User>();
     }
 }
