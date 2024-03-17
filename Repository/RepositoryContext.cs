@@ -16,6 +16,6 @@ public class RepositoryContext(DbContextOptions options) : IdentityDbContext<Use
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
     }
 
-    public DbSet<Company>? Companies { get; set; }
-    public DbSet<Employee>? Employees { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    public DbSet<Employee> Employees { get; set; }
 }

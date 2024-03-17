@@ -152,7 +152,7 @@ public static class ServiceExtensions
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
 
-        // secret key usually retrieve from environment variable
+        // secret key is usually retrieved from environment variable
         // run cmd as admin to create secret key: setx WEB_API_SECRET "MyTopSecretKeyHasGreater256Bytes113211162023!!!!" /M
         var secretKey = Environment.GetEnvironmentVariable("WEB_API_SECRET");
         services.AddAuthentication(opt =>
