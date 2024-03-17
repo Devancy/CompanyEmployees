@@ -4,7 +4,7 @@ This repository is a practical ASP.NET Core Web API (.NET 8) solution that imple
 
 Presentation Layer:
  - CompanyEmployees
- - Presentation
+ - CompanyEmployees.Presentation
 
 Infrastructure Layer:
  - Repository
