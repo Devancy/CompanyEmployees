@@ -13,10 +13,10 @@ Infrastructure Layer:
 Service Layer:
  - Service
  - Service.Contract
- - Shared
 
 Domain Layer:
  - Contract
+ - Shared
  - Entities
 
 ## Features
