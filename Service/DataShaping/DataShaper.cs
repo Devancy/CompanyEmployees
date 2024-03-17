@@ -1,5 +1,5 @@
 ﻿using Contracts;
-using Entities.Models;
+using Shared.ResponseFeatures;
 using System.Reflection;
 
 namespace Service.DataShaping;

@@ -1,11 +1,10 @@
-﻿using Entities.LinkModels;
-using System.Collections;
+﻿using System.Collections;
 using System.Dynamic;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace Entities.Models;
+namespace Shared.ResponseFeatures;
 
 public class Entity : DynamicObject, IXmlSerializable, IDictionary<string, object>
 {

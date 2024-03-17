@@ -1,4 +1,4 @@
-﻿namespace Entities.Models;
+﻿namespace Shared.ResponseFeatures;
 
 /// <summary>
 /// ShapedEntity carries the Id to constructs the links for the responses

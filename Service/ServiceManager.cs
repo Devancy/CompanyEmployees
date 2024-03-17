@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using Contracts;
-using Entities;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Service.Contracts;
+using Shared;
 
 namespace Service;
 

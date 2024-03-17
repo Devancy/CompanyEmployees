@@ -1,6 +1,6 @@
 ﻿using Entities.Models;
 
-namespace Entities.LinkModels;
+namespace Shared.ResponseFeatures;
 
 public class LinkResponse
 {

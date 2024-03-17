@@ -1,7 +1,6 @@
 ﻿using Asp.Versioning;
 using CompanyEmployees.Presentation.Controllers;
 using Contracts;
-using Entities;
 using Entities.Models;
 using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using Repository;
 using Service;
 using Service.Contracts;
+using Shared;
 using System.Text;
 using System.Threading.RateLimiting;
 

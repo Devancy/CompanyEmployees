@@ -7,7 +7,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Shared\Shared.csproj" />
+	  <Compile Remove="LinkModels\**" />
+	  <EmbeddedResource Remove="LinkModels\**" />
+	  <None Remove="LinkModels\**" />
 	</ItemGroup>
 
 	<ItemGroup>

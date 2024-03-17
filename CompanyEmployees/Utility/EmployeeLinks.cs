@@ -1,8 +1,7 @@
 ﻿using Contracts;
-using Entities.LinkModels;
-using Entities.Models;
 using Microsoft.Net.Http.Headers;
 using Shared.DataTransferObjects;
+using Shared.ResponseFeatures;
 
 namespace CompanyEmployees.Utility;
 
@@ -60,8 +59,8 @@ public class EmployeeLinks(LinkGenerator linkGenerator, IDataShaper<EmployeeDto>
 
     private List<Link> CreateLinksForEmployee(HttpContext httpContext, Guid companyId, Guid id, string fields = "")
     {
-        var links = new List<Link>
-            {
+        List<Link> links =
+            [
                 new Link(_linkGenerator.GetUriByAction(httpContext, "GetEmployeeForCompany", values: new { companyId, id, fields }),
                 "self",
                 "GET"),
@@ -74,7 +73,7 @@ public class EmployeeLinks(LinkGenerator linkGenerator, IDataShaper<EmployeeDto>
                 new Link(_linkGenerator.GetUriByAction(httpContext, "PartiallyUpdateEmployeeForCompany", values: new { companyId, id }),
                 "partially_update_employee",
                 "PATCH")
-            };
+            ];
 
         return links;
     }

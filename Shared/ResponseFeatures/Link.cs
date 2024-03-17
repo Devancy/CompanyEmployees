@@ -1,4 +1,4 @@
-﻿namespace Entities.LinkModels;
+﻿namespace Shared.ResponseFeatures;
 
 public class Link
 {

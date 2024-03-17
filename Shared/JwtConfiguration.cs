@@ -1,4 +1,4 @@
-﻿namespace Entities;
+﻿namespace Shared;
 public class JwtConfiguration
 {
     public string Section { get; set; } = "JwtSettings";

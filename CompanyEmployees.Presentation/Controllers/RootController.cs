@@ -1,4 +1,4 @@
-﻿using Entities.LinkModels;
+﻿using Shared.ResponseFeatures;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 

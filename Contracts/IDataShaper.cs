@@ -1,4 +1,4 @@
-﻿using Entities.Models;
+﻿using Shared.ResponseFeatures;
 namespace Contracts;
 
 public interface IDataShaper<T>

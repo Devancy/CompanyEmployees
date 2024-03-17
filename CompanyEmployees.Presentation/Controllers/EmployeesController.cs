@@ -1,5 +1,5 @@
 ﻿using CompanyEmployees.Presentation.ActionFilters;
-using Entities.LinkModels;
+using Shared.ResponseFeatures;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;

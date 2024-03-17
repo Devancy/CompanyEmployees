@@ -1,4 +1,4 @@
-﻿using Entities.LinkModels;
+﻿using Shared.ResponseFeatures;
 using Microsoft.AspNetCore.Http;
 using Shared.DataTransferObjects;
 

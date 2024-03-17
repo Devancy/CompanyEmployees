@@ -1,4 +1,4 @@
-﻿namespace Entities.LinkModels;
+﻿namespace Shared.ResponseFeatures;
 
 /// <summary>
 /// LinkCollectionWrapper describes the root of the controller for the responses
