@@ -4,7 +4,7 @@ using Entities;
 using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -14,24 +14,16 @@ using System.Security.Cryptography;
 using System.Text;
 
 namespace Service;
-public sealed class AuthenticationService : IAuthenticationService
+public sealed class AuthenticationService(ILoggerManager logger,
+                                          IMapper mapper,
+                                          UserManager<User> userManager,
+                                          IOptionsMonitor<JwtConfiguration> configuration) : IAuthenticationService
 {
     private User? _user;
-    private readonly JwtConfiguration _jwtConfiguration = new();
-    private readonly ILoggerManager _logger;
-    private readonly IMapper _mapper;
-    private readonly UserManager<User> _userManager;
-    private readonly IConfiguration _configuration;
-
-    public AuthenticationService(ILoggerManager logger, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
-    {
-        _logger = logger;
-        _mapper = mapper;
-        _userManager = userManager;
-        _configuration = configuration;
-
-        _configuration.Bind(_jwtConfiguration.Section, _jwtConfiguration);
-    }
+    private readonly JwtConfiguration _jwtConfiguration = configuration.CurrentValue;
+    private readonly ILoggerManager _logger = logger;
+    private readonly IMapper _mapper = mapper;
+    private readonly UserManager<User> _userManager = userManager;
 
     public async Task<IdentityResult> RegisterUser(UserForRegistrationDto userForRegistration)
     {
