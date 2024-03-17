@@ -3,7 +3,7 @@ This repository is a practical ASP.NET Core Web API (.NET 8) solution that imple
 ![](https://code-maze.com/wp-content/uploads/2021/07/onion_architecture.jpeg)
 
 Presentation Layer:
- - CompanyEmployees CompanyEmployees
+ - CompanyEmployees
  - Presentation
 
 Infrastructure Layer:
