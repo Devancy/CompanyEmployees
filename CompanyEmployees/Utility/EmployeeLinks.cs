@@ -17,7 +17,7 @@ public class EmployeeLinks(LinkGenerator linkGenerator, IDataShaper<EmployeeDto>
         var shapedEmployees = ShapeData(employeesDto, fields);
 
         if (ShouldGenerateLinks(httpContext))
-            return ReturnLinkdedEmployees(employeesDto, fields, companyId, httpContext, shapedEmployees);
+            return ReturnLinkedEmployees(employeesDto, fields, companyId, httpContext, shapedEmployees);
 
         return ReturnShapedEmployees(shapedEmployees);
     }
@@ -41,7 +41,7 @@ public class EmployeeLinks(LinkGenerator linkGenerator, IDataShaper<EmployeeDto>
 
     private static LinkResponse ReturnShapedEmployees(List<Entity> shapedEmployees) => new LinkResponse { ShapedEntities = shapedEmployees };
 
-    private LinkResponse ReturnLinkdedEmployees(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext, List<Entity> shapedEmployees)
+    private LinkResponse ReturnLinkedEmployees(IEnumerable<EmployeeDto> employeesDto, string fields, Guid companyId, HttpContext httpContext, List<Entity> shapedEmployees)
     {
         var employeeDtoList = employeesDto.ToList();
 
