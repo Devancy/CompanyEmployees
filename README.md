@@ -46,7 +46,10 @@ Domain Layer:
 Provide your SQL Server connection string in **CompanyEmployees\appsettings.json**
 
 ### Run the app
-Navigate to *CompanyEmployees* directory, initialize the sample database by the .NET CLI command:
+In the solution directory, restore all the dependencies by the .NET CLI command:
+
+    dotnet restore
+Navigate to *CompanyEmployees* directory, initialize the sample database:
 
     dotnet ef database update
 
