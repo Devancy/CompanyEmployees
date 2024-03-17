@@ -1,19 +1,20 @@
-﻿using Contracts;
-using LoggerService;
-using Repository;
-using Service.Contracts;
-using Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.Mvc;
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using CompanyEmployees.Presentation.Controllers;
-using System.Threading.RateLimiting;
+using Contracts;
+using Entities;
 using Entities.Models;
-using Microsoft.AspNetCore.Identity;
+using LoggerService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Repository;
+using Service;
+using Service.Contracts;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace CompanyEmployees.Extensions;
 
@@ -150,7 +151,8 @@ public static class ServiceExtensions
 
     public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings");
+        var jwtConfiguration = new JwtConfiguration();
+        configuration.Bind(jwtConfiguration.Section, jwtConfiguration);
 
         // secret key is usually retrieved from environment variable
         // run cmd as admin to create secret key: setx WEB_API_SECRET "MyTopSecretKeyHasGreater256Bytes113211162023!!!!" /M
@@ -168,8 +170,8 @@ public static class ServiceExtensions
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings["validIssuer"],
-                ValidAudience = jwtSettings["validAudience"],
+                ValidIssuer = jwtConfiguration.ValidIssuer,
+                ValidAudience = jwtConfiguration.ValidAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
             };
         });
