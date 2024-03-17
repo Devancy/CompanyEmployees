@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +9,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Service;
@@ -40,13 +42,34 @@ public sealed class AuthenticationService(ILoggerManager logger, IMapper mapper,
         return result;
     }
 
-    public async Task<string> CreateToken()
+    public async Task<TokenDto> CreateToken(bool populateExp)
     {
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaimsAsync();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
-        return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        var refreshToken = GenerateRefreshToken();
+        _user.RefreshToken = refreshToken;
+
+        if (populateExp)
+            _user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
+        
+        await _userManager.UpdateAsync(_user);
+        
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+        return new TokenDto(accessToken, refreshToken);
+    }
+
+    public async Task<TokenDto> RefreshToken(TokenDto tokenDto)
+    {
+        var claimsPrincipal = GetClaimsPrincipalFromAccessToken(tokenDto.AccessToken);
+        var user = await _userManager.FindByNameAsync(claimsPrincipal.Identity.Name);
+        if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            throw new RefreshTokenBadRequest();
+        _user = user;
+
+        return await CreateToken(populateExp: false);
     }
 
     private static SigningCredentials GetSigningCredentials()
@@ -59,10 +82,10 @@ public sealed class AuthenticationService(ILoggerManager logger, IMapper mapper,
 
     private async Task<List<Claim>> GetClaimsAsync()
     {
-        var claims = new List<Claim>
-            {
+        List<Claim> claims =
+            [
                 new Claim(ClaimTypes.Name, _user.UserName)
-            };
+            ];
 
         var roles = await _userManager.GetRolesAsync(_user);
         foreach (var role in roles)
@@ -88,4 +111,39 @@ public sealed class AuthenticationService(ILoggerManager logger, IMapper mapper,
 
         return tokenOptions;
     }
+
+    private static string GenerateRefreshToken()
+    {
+        var randomNumber = new byte[32];
+        using var random = RandomNumberGenerator.Create();
+        random.GetBytes(randomNumber);
+
+        return Convert.ToBase64String(randomNumber);
+    }
+
+    private ClaimsPrincipal GetClaimsPrincipalFromAccessToken(string token)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateAudience = true,
+            ValidateIssuer = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("WEB_API_SECRET"))),
+            ValidateLifetime = true,
+            ValidIssuer = jwtSettings["validIssuer"],
+            ValidAudience = jwtSettings["validAudience"]
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+
+        if (securityToken is not JwtSecurityToken jwtSecurityToken
+            || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+        {
+            throw new SecurityTokenException("Invalid token");
+        }
+
+        return claimsPrincipal;
+    }
+
 }
