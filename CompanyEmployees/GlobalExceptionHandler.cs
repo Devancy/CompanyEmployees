@@ -2,7 +2,7 @@
 using Entities.ErrorModel;
 using Entities.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
-using System.Net;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CompanyEmployees;
 
@@ -20,6 +20,7 @@ public class GlobalExceptionHandler(ILoggerManager logger) : IExceptionHandler
             httpContext.Response.StatusCode = contextFeature.Error switch
             {
                 IErrorStatusCode ex => ex.GetErrorStatusCode(),
+                SecurityTokenValidationException => StatusCodes.Status400BadRequest,
                 _ => StatusCodes.Status500InternalServerError
             };
             _logger.LogError($"Something went wrong: {exception.Message}");
