@@ -11,12 +11,13 @@ Infrastructure Layer:
  - LoggerService
  
 Service Layer:
- - Service Service.Contract
- - Contract
+ - Service
+ - Service.Contract
+ - Shared
 
 Domain Layer:
+ - Contract
  - Entities
- - Shared
 
 ## Features
 
