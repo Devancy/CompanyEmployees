@@ -16,7 +16,6 @@ Service Layer:
 
 Domain Layer:
  - Contract
- - Shared
  - Entities
 
 ## Features
