@@ -1,0 +1,19 @@
+services:
+  companyemployees:
+    image: ${DOCKER_REGISTRY-}companyemployees
+    build:
+      context: .
+      dockerfile: CompanyEmployees/Dockerfile
+    environment:
+      - WEB_API_SECRET=YourTopSecretKeyHasGreater256Bytes113211162023!!!!
+    depends_on:
+      - companydb
+      
+  companydb:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+#    user: root
+# enable the line above if the container has write access issue to the mounted volume '/var/opt/mssql/data'
+# Fix the permission by these commands, then restart docker-compose
+# docker exec -it orderdb bash
+# chown -R 10001:10001 /var/opt/mssql/data
+# exit
