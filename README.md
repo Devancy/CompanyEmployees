@@ -1,66 +1,96 @@
-# Welcome
-This repository is a practical ASP.NET Core Web API (.NET 8) solution that implements **Onion Architecture**
-![](https://code-maze.com/wp-content/uploads/2021/07/onion_architecture.jpeg)
+# CompanyEmployees API
 
-Presentation Layer:
- - CompanyEmployees
- - CompanyEmployees.Presentation
+## Enterprise-Grade ASP.NET Core Web API (.NET 8) with Onion Architecture
 
-Infrastructure Layer:
- - Repository
- - LoggerService
- 
-Service Layer:
- - Service
- - Service.Contract
+A robust RESTful API solution demonstrating industry best practices and advanced architectural patterns using .NET 8. This project implements a comprehensive employee management system with enterprise-level features and clean architecture principles.
 
-Domain Layer:
- - Contract
- - Shared
- - Entities
+![Onion Architecture](https://code-maze.com/wp-content/uploads/2021/07/onion_architecture.jpeg)
 
-## Features
+## Architecture Overview
 
- 1. HTTP methods: GET, POST, DELETE, PUT, PATCH, OPTIONS, HEAD
- 2. Global error handling
- 3. Validation attributes
- 4. Asynchronous code
- 5. Paging, Filtering, Searching, Sorting
- 6. Data shaping
- 7. Supporting HATEOAS
- 8. Versioning
- 9. Output caching
- 10. Rate limiting
- 11. Authentication & Authorization (JWT + refresh token)
- 12. Documenting API with Open API
+This solution strictly adheres to the **Onion Architecture** pattern, providing clear separation of concerns:
 
-## How to run
+### Domain Layer (Core)
+- **Contracts**: Interface definitions enforcing business rules
+- **Entities**: Domain models and business objects
+- **Shared**: Common DTOs and shared resources
 
-### Prerequisites:
- - .NET 8
- - SQL Server
- ### Create the secret key
- Run the following command in CMD with admin privilege to create secret key to sign/validate tokens.
+### Service Layer
+- **Service.Contracts**: Service interfaces
+- **Service**: Business logic implementation
 
-    setx WEB_API_SECRET "YourTopSecretKeyHasGreater256Bytes113211162023!!!!" /M
+### Infrastructure Layer
+- **Repository**: Data access implementation and database context
+- **LoggerService**: Logging mechanism
 
-Provide your SQL Server connection string in **CompanyEmployees\appsettings.json**
+### Presentation Layer
+- **CompanyEmployees**: Main application entry point and configuration
+- **CompanyEmployees.Presentation**: API controllers and presentation logic
 
-### Run the app
-In the solution directory, restore all the dependencies by the .NET CLI command:
+## Technical Highlights
 
-    dotnet restore
-Navigate to *CompanyEmployees* directory, initialize the sample database:
+### Advanced API Features
+- Complete RESTful API implementation (GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD)
+- Authentication & Authorization with JWT and refresh token mechanism
+- API versioning with support for multiple versioning strategies
+- HATEOAS (Hypermedia as the Engine of Application State) implementation
+- Comprehensive API documentation with OpenAPI/Swagger
 
-    dotnet ef database update
+### Performance & Scalability
+- Output caching for optimized response times
+- Rate limiting to protect against abuse
+- Asynchronous code execution throughout the application
+- Advanced data retrieval options (Paging, Filtering, Searching, Sorting)
 
-Start the app
+### Data Handling
+- Data shaping capabilities for efficient data transfer
+- Entity Framework Core with code-first approach
+- Repository pattern for data access abstraction
 
-    dotnet run
+### Security & Best Practices
+- Global exception handling with custom error responses
+- Input validation using attributes and model validation
+- Docker containerization support
 
-Test the APIs by these commands:
+## Setup & Deployment
 
-    curl https://localhost:5001/api/companies/c9d4c053-49b6-410c-bc78-2d54a9991870
-    curl https://localhost:5001/api/companies/c9d4c053-49b6-410c-bc78-2d54a9991870/employees
+### Prerequisites
+- .NET 8 SDK
+- SQL Server (or SQL Server Express)
 
-Open Swagger UI using a web browser to explorer the APIs at: https://localhost:5001/swagger/index.html
+### Security Configuration
+
+#### Windows Environment
+```bash
+# Create JWT secret key (run as Administrator)
+setx WEB_API_SECRET "YourTopSecretKeyHasGreater256Bytes113211162023!!!!" /M
+```
+
+#### Docker/Container Environment
+Secret management via environment variables in docker-compose.yml:
+```yaml
+services:
+  companyemployees:
+    environment:
+      - WEB_API_SECRET=YourTopSecretKeyHasGreater256Bytes113211162023!!!!
+```
+
+### Database Setup
+1. Configure your SQL Server connection string in `CompanyEmployees\appsettings.json`
+2. Initialize the database:
+```bash
+dotnet ef database update
+```
+
+### Running the Application
+```bash
+# Restore dependencies
+dotnet restore
+
+# Start the API
+dotnet run --project CompanyEmployees
+```
+
+### API Documentation
+Explore the complete API using Swagger UI: https://localhost:5001/swagger/index.html
+or if you're running in docker environment: https://localhost:8081/swagger/index.html
